@@ -2,6 +2,7 @@ import argparse
 import sys
 import os
 import numpy as np
+import time
 import pdb
 
 parser = argparse.ArgumentParser(description = '''A simple script for matching sequences from two different MSAs based
@@ -126,12 +127,14 @@ id2 = a3m2.split('/')[-1].split('.')[0]
 write_a3m(merged_msa, outdir+id1+'_'+id2+'.a3m')
 #Print some statistics
 t2 = time.time()
-print('Matching and writing took', np.round(t2-t1,2), 'seconds...')
+print('Matching and writing took', np.round(t2-t1,2), 'seconds.\nStatistics')
 print(id1+'\t'+id2)
 print('Total seqs\t'+str(nseqs_total1)+'\t'+str(nseqs_total2))
 print('Lengths\t'+str(l1)+'\t'+str(l2))
 print('Unique seqs\t'+str(nunique_ox1)+'\t'+str(nunique_ox2))
-print('--------------')
+print('-------------------------------------------------------------------------------')
 print('Total combos\t'+str(ncombos_total))
 print('Median combos\t'+str(median_combos))
 print('Std combos\t'+str(std_combos))
+print('Matched combos\t'+str(merged_msa.shape[0]))
+print('Length of merged MSA\t'+str(merged_msa.shape[1]))

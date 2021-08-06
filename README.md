@@ -10,5 +10,5 @@ Run like this:
 A3M1=./test/1KA9_F.a3m #Path to a3m1
 A3M2=./test/1KA9_H.a3m #Path to a3m2
 MGF=0.9 #Max gap fraction allowed in each sequence
-OUTDIR=./ #Output directory
+OUTDIR=./test/ #Output directory
 python3 oxmatch.py --a3m1 $A3M1 --a3m2 $A3M2 --max_gap_fraction $MGF --outdir $OUTDIR
