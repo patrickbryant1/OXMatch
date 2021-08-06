@@ -59,7 +59,43 @@ def read_a3m(infile,max_gap_fraction=0.9):
 
     return np.array(parsed, dtype=np.int8, order='F'), np.array(species)
 
+def match_top_ox(ox1, ox2, msa1, msa2):
+    '''Select the top ox match (first match) in each MSA and merge the sequences to a final MSA file
+    in a3m format
+    - number of possible combinations
+    - median and std in hits per species
+    '''
+    #Don't remove the zeros (no OX), then the query sequences (first line)
+    #will be removed
+    matching_ox = np.intersect1d(ox1,ox2)
 
+    ind1 = [] #Index to select from the individual MSAs
+    ind2 = []
+    ncombos = []
+    #Go through all matching and select the first (top) hit
+    for ox in matching_ox:
+        ind1.append(min(np.argwhere(ox1==ox)[:,0]))
+        ind2.append(min(np.argwhere(ox2==ox)[:,0]))
+
+        ncombos.append(np.argwhere(ox1==ox).shape[0]*np.argwhere(ox2==ox).shape[0])
+
+    #Select from MSAs and merge
+    merged = np.concatenate((msa1[ind1], msa2[ind2]),axis=1)
+
+    return merged, np.sum(ncombos), np.median(ncombos), np.std(ncombos)
+
+def write_a3m(merged, outfile):
+    '''Write a3m MSA'''
+    backmap = { 1:'A', 2:'C', 3:'D', 4:'E', 5:'F',6:'G' ,7:'H',
+               8:'I', 9:'K', 10:'L', 11:'M', 12:'N', 13:'P',14:'Q',
+               15:'R', 16:'S', 17:'T', 18:'V', 19:'W', 20:'Y', 21:'-'} #Here all unusual AAs and gaps are set to the same char (same in the GaussDCA script)
+
+    with open(outfile,'w') as file:
+        for i in range(len(merged)):
+            file.write('>'+str(i)+'\n')
+            file.write(''.join([backmap[ch] for ch in merged[i]])+'\n')
+
+    return None
 #################MAIN####################
 
 #Parse args
@@ -84,4 +120,10 @@ nseqs_total2, l2 = msa2.shape
 nseqs_OX2 = np.argwhere(OX2!=0).shape[0]
 nunique_OX1 = np.unique(OX2).shape[0]-1 #Subtract 1 (no species)
 
-pdb.set_trace()
+#Match
+merged_msa, ncombos_total, median_combos, std_combos = match_top_ox(ox1, ox2, msa1, msa2)
+
+#Write the new a3m
+id1 = a3m1.split('/')[-1].split('.')[0]
+id2 = a3m2.split('/')[-1].split('.')[0]
+write_a3m(merged_msa, outdir+id1+'_'+id2+'.a3m')
