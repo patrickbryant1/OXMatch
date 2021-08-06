@@ -10,7 +10,8 @@ parser = argparse.ArgumentParser(description = '''A simple script for matching s
                                                 on the OX identifiers resulting from an hhblits search..''')
 
 parser.add_argument('--a3m1', nargs=1, type= str, default=sys.stdin, help = 'Path to msa1 in a3m format.')
-parser.add_argument('--a3m1', nargs=1, type= str, default=sys.stdin, help = 'Path to msa2 in a3m format.')
+parser.add_argument('--a3m2', nargs=1, type= str, default=sys.stdin, help = 'Path to msa2 in a3m format.')
+parser.add_argument('--max_gap_fraction', nargs=1, type=float, default=sys.stdin, help = 'The maximal gap fraction allowed in each sequence (default = 0.9).')
 parser.add_argument('--outdir', nargs=1, type= str, default=sys.stdin, help = 'Path to output directory. Include /in end')
 
 
@@ -66,12 +67,13 @@ args = parser.parse_args()
 #Data
 a3m1 = args.a3m1[0]
 a3m2 = args.a3m2[0]
+max_gap_fraction = args.max_gap_fraction[0]
 outdir = args.outdir[0]
 
 #MSA1
-msa1, OX1 = read_a3m(a3m1)
+msa1, OX1 = read_a3m(a3m1, max_gap_fraction)
 #MSA2
-msa2, OX2 = read_a3m(a3m2)
+msa2, OX2 = read_a3m(a3m2, max_gap_fraction)
 
 #Get some statistics for msa1
 nseqs_total1, l1 = msa1.shape
@@ -81,3 +83,5 @@ nunique_OX1 = np.unique(OX1).shape[0]-1 #Subtract 1 (no species)
 nseqs_total2, l2 = msa2.shape
 nseqs_OX2 = np.argwhere(OX2!=0).shape[0]
 nunique_OX1 = np.unique(OX2).shape[0]-1 #Subtract 1 (no species)
+
+pdb.set_trace()
