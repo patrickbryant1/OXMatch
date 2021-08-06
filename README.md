@@ -20,7 +20,7 @@ OUTDIR=./test/ #Output directory
 
 python3 oxmatch.py --a3m1 $A3M1 --a3m2 $A3M2 --max_gap_fraction $MGF --outdir $OUTDIR
 
-## Statistics of matching
+## Some statistics of different ways of matching MSAs
 Comparison of the results from matching the top and bottom hits for each OX from an hhblits (https://toolkit.tuebingen.mpg.de/tools/hhblits) search with that of no pairing whatsoever (noselection). The dataset used for the comparison consists of around 1600 protein-protein interactions and can be found here: https://www.nature.com/articles/s41467-021-21636-z
 The evaluation refers to how many of the top 10 GaussDCA correlations in the interface are actually true contacts (having CBs within 8Å from each other). It is twice as likely to obtain at least 5 true contacts when matching the top hits vs the bottom ones (and virtually infinite compared with no matching).
 
