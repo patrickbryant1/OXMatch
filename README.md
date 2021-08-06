@@ -1,5 +1,6 @@
 # OXMatch
 A simple script for matching sequences from two different MSAs based on the OX identifiers resulting from an hhblits search.
+The top hits from each MSA and OX will be selected since these are currently the most likely ortholog selections
 
 Input: MSAs to be matched in a3m format
 
@@ -18,3 +19,6 @@ MGF=0.9 #Max gap fraction allowed in each sequence
 OUTDIR=./test/ #Output directory
 
 python3 oxmatch.py --a3m1 $A3M1 --a3m2 $A3M2 --max_gap_fraction $MGF --outdir $OUTDIR
+
+##Statistics of matching
+./num_accurate_if_topN.png
