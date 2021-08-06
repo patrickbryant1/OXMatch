@@ -2,8 +2,6 @@ import argparse
 import sys
 import os
 import numpy as np
-import pandas as pd
-import glob
 import pdb
 
 parser = argparse.ArgumentParser(description = '''A simple script for matching sequences from two different MSAs based
@@ -84,16 +82,16 @@ def match_top_ox(ox1, ox2, msa1, msa2):
 
     return merged, np.sum(ncombos), np.median(ncombos), np.std(ncombos)
 
-def write_a3m(merged, outfile):
+def write_a3m(merged_msa, outfile):
     '''Write a3m MSA'''
     backmap = { 1:'A', 2:'C', 3:'D', 4:'E', 5:'F',6:'G' ,7:'H',
                8:'I', 9:'K', 10:'L', 11:'M', 12:'N', 13:'P',14:'Q',
                15:'R', 16:'S', 17:'T', 18:'V', 19:'W', 20:'Y', 21:'-'} #Here all unusual AAs and gaps are set to the same char (same in the GaussDCA script)
 
     with open(outfile,'w') as file:
-        for i in range(len(merged)):
+        for i in range(len(merged_msa)):
             file.write('>'+str(i)+'\n')
-            file.write(''.join([backmap[ch] for ch in merged[i]])+'\n')
+            file.write(''.join([backmap[ch] for ch in merged_msa[i]])+'\n')
 
     return None
 #################MAIN####################
@@ -106,19 +104,18 @@ a3m2 = args.a3m2[0]
 max_gap_fraction = args.max_gap_fraction[0]
 outdir = args.outdir[0]
 
+t1 = time.time()
 #MSA1
-msa1, OX1 = read_a3m(a3m1, max_gap_fraction)
+msa1, ox1 = read_a3m(a3m1, max_gap_fraction)
 #MSA2
-msa2, OX2 = read_a3m(a3m2, max_gap_fraction)
+msa2, ox2 = read_a3m(a3m2, max_gap_fraction)
 
 #Get some statistics for msa1
 nseqs_total1, l1 = msa1.shape
-nseqs_OX1 = np.argwhere(OX1!=0).shape[0]
-nunique_OX1 = np.unique(OX1).shape[0]-1 #Subtract 1 (no species)
+nunique_ox1 = np.unique(ox1).shape[0]-1 #Subtract 1 (no species)
 #Get some statistics for msa2
 nseqs_total2, l2 = msa2.shape
-nseqs_OX2 = np.argwhere(OX2!=0).shape[0]
-nunique_OX1 = np.unique(OX2).shape[0]-1 #Subtract 1 (no species)
+nunique_ox2 = np.unique(ox2).shape[0]-1 #Subtract 1 (no species)
 
 #Match
 merged_msa, ncombos_total, median_combos, std_combos = match_top_ox(ox1, ox2, msa1, msa2)
@@ -127,3 +124,14 @@ merged_msa, ncombos_total, median_combos, std_combos = match_top_ox(ox1, ox2, ms
 id1 = a3m1.split('/')[-1].split('.')[0]
 id2 = a3m2.split('/')[-1].split('.')[0]
 write_a3m(merged_msa, outdir+id1+'_'+id2+'.a3m')
+#Print some statistics
+t2 = time.time()
+print('Matching and writing took', np.round(t2-t1,2), 'seconds...')
+print(id1+'\t'+id2)
+print('Total seqs\t'+str(nseqs_total1)+'\t'+str(nseqs_total2))
+print('Lengths\t'+str(l1)+'\t'+str(l2))
+print('Unique seqs\t'+str(nunique_ox1)+'\t'+str(nunique_ox2))
+print('--------------')
+print('Total combos\t'+str(ncombos_total))
+print('Median combos\t'+str(median_combos))
+print('Std combos\t'+str(std_combos))
