@@ -8,6 +8,7 @@ Output: Merged MSA i a3m format
 Requirements: python3 and numpy (v.1.16.6 or higher)
 
 Run like this:
+
 A3M1=./test/1KA9_F.a3m #Path to a3m1
 
 A3M2=./test/1KA9_H.a3m #Path to a3m2
