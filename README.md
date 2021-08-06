@@ -20,5 +20,6 @@ OUTDIR=./test/ #Output directory
 
 python3 oxmatch.py --a3m1 $A3M1 --a3m2 $A3M2 --max_gap_fraction $MGF --outdir $OUTDIR
 
-##Statistics of matching
-./num_accurate_if_topN.png
+## Statistics of matching
+Comparison of the results from matching the top and bottom hits for each OX from an hhblits search with no pairing (noselection). The dataset used for the comparison consists of around 1600 protein-protein interactions and can be found here: https://www.nature.com/articles/s41467-021-21636-z
+![Image 1](num_accurate_if_topN.png)
